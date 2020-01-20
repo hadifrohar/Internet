@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>TODO list</title>
+
+
+
+    <script>
+
+
+        let alertBox = (function () {
+            //this function hides the alert box if it is already on
+            function hide()
+            {
+                if(!document.getElementById('alert_box').classList.contains('d-none'))
+                {
+                    document.getElementById('alert_box').classList.add('d-none');
+                }
+            }
+
+            //this function shows alert box
+            function show(str) {
+                document.getElementById('alert_box').innerHTML = str;
+                document.getElementById('alert_box').classList.remove('d-none');
+            }
+
+            return {
+                hide: hide,
+                show: show
+            }
+
+        })();
+
+        //to-do object class
+        class Todo {
+
+            constructor(description) {
+                this.description = description;
+                this.completed = false;
+            }
+
+            isCompleted() { return this.completed; }
+            setCompleted() { this.completed = true; }
+            getDescription() { return this.description; }
+        }
+
+        let list =(function() {
+            let todo_list = []; //contains all the todos, completed and non-completed
+
+            function validate(todo_desc)
+            {
+                //checks if it is empty to-do or not
+                function isEmpty(desc)
+                {
+                    return desc == '' || desc == null;
+                }
+
+                //checks if this to-do already in list and not completed
+                function alreadyExists(desc)
+                {
+                    for(const item of todo_list){
+                        if(!item.isCompleted() && item.getDescription() == desc) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                if(isEmpty(todo_desc))
+                {
+                    alertBox.show('Please enter non-empty TODO');
+                    return false;
+                }
+                else if(alreadyExists(todo_desc))
+                {
+                    alertBox.show('This todo already exists!');
+                    return false;
+                }
+
+                return true;
+            }
+
+            function addItemToList(item){
+
+                //create a complete button for non-completed todos
+                function createButton(){
+                    let new_button = document.createElement('button')
+                    new_button.classList.add('btn', 'btn-success', 'btn-sm', 'float-right')
+                    new_button.innerHTML = 'Complete'
+                    return new_button;
+                }
+
+                //create html list item
+                function createListItem(){
+                    let new_item = document.createElement('li');
+                    new_item.classList.add('list-group-item', 'list-group-item-primary');
+                    return new_item;
+                }
+
+                let new_item = createListItem();
+                new_item.appendChild(document.createTextNode(item.getDescription())); //adds to-do description to html
+
+                //if to-do is not completed then creates and adds a complete button in html
+                if(!item.isCompleted()) {
+                    let new_button = createButton();
+                    new_button.addEventListener("click", complete);
+                    new_item.appendChild(new_button);
+                }
+                else
+                {
+                    new_item.classList.add('list-group-item-success');
+                }
+
+                document.getElementById('todo_list').appendChild(new_item);
+            }
+
+            //adds new to-do to the list
+            function addTodo(){
+
+                function removeExtraWhiteSpaces(str){
+                    return str.replace(/\s+/g,' ').trim();
+                }
+
+                let description = removeExtraWhiteSpaces(document.getElementById('todo').value);
+                if(!validate(description)) {
+                    return;
+                }
+                alertBox.hide();
+
+                let todo = new Todo(description);
+                addItemToList(todo)
+                todo_list.push(todo);
+            }
+
+
+
+            //switch between the completed and non-completed lists
+            function switchList() {
+                alertBox.hide();
+                document.getElementById('todo_list').innerHTML = '';
+
+                //add to html only completed todos
+                if(document.getElementById('switch_list_btn').innerHTML == 'Show completed')
+                {
+                    for(const item of todo_list) {
+                        if(item.isCompleted())
+                        {
+                            addItemToList(item);
+                        }
+                    }
+                    document.getElementById('switch_list_btn').innerHTML = 'Show todo';
+                    document.getElementById('switch_list_btn').classList.remove('btn-success');
+                    document.getElementById('switch_list_btn').classList.add('btn-secondary');
+                    document.getElementById('input_block').classList.add('d-none');
+
+                }
+                //add to html only non-completed todos
+                else
+                {
+                    for(const item of todo_list) {
+                        if(!item.isCompleted())
+                        {
+                            addItemToList(item);
+                        }
+                    }
+                    document.getElementById('switch_list_btn').innerHTML = 'Show completed';
+                    document.getElementById('switch_list_btn').classList.remove('btn-secondary');
+                    document.getElementById('switch_list_btn').classList.add('btn-success');
+                    document.getElementById('input_block').classList.remove('d-none');
+
+                }
+            }
+
+            function complete()
+            {
+                this.removeEventListener('click', complete); //removes the listener of the button
+                alertBox.hide();
+
+                //searches for the to-do to set it as completed
+                for(const item of todo_list)
+                {
+                    if(item.getDescription() == this.parentElement.firstChild.nodeValue)
+                    {
+                        item.setCompleted();
+                    }
+                }
+                document.getElementById('todo_list').removeChild(this.parentElement);
+            }
+
+            return {
+                addTodo : addTodo,
+                switchList: switchList
+            }
+
+        })();
+
+
+
+        // wait for the DOM to be loaded before accessing element to add listeners!
+        document.addEventListener('DOMContentLoaded', function(){
+
+            //add listener for the new to-do button
+            document.getElementById("add_button").addEventListener("click", list.addTodo);
+
+            //add a listener for the switching lists button
+            document.getElementById("switch_list_btn").addEventListener("click", list.switchList);
+
+            //add a listener to keyboard presses so we hide the alert if it is on
+            document.addEventListener("keypress", alertBox.hide);
+
+
+        }, false);
+
+    </script>
+
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+
+            <h1 class="font-weight-bolder text-center">WORK TO DO</h1>
+
+            <div class="text-center">
+                <button type="button" id="switch_list_btn" class="btn btn-success btn-lg mb-3">Show completed</button>
+            </div>
+
+            <div class="input-group mb-3" id="input_block">
+                <input type="text" class="form-control" placeholder="Type your TODO here" id="todo">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" id="add_button">Add TODO</button>
+                </div>
+            </div>
+
+            <div class="alert alert-danger d-none" role="alert" id="alert_box"></div>
+
+            <ul class="list-group" id="todo_list"> </ul>
+
+        </div>
+    </div>
+
+</div>
+
+
+
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

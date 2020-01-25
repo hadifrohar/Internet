@@ -1,13 +1,13 @@
 # Internet A
 Internet A exercises, written by Hadi Frohar
-
-[classEx] - In-class exercises
-
 ### Exercises
-* [ex1] - contains 4 programs, described in .py file
-* [ex3] - convert sql file to csv files, it creates csv file for each table and it inserts all table items into it
+* [ex1] - HTML, CSS, Basic DOM manipulations
+* [ex2] - Todo list: Javascript and simple DOM manipulations
+* [ex3] - GitHub search: Ajax, Promises, REST services
+* [ex4] - GitHub search: as in ex3 with authentication and SQLite. nodejs-express , javascript, html, css, SQLite
 
 
-[classEx]: <https://github.com/HadiFrohar/Python/blob/master/classEx>
-[ex1]: <https://github.com/HadiFrohar/Python/blob/master/ex1.py>
-[ex3]: <https://github.com/HadiFrohar/Python/blob/master/ex3.py>
+[ex1]: <https://github.com/hadifrohar/Internet/tree/master>
+[ex2]: <https://github.com/hadifrohar/Internet/tree/master/Ex2>
+[ex3]: <https://github.com/hadifrohar/Internet/tree/master/Ex3>
+[ex4]: <https://github.com/hadifrohar/Internet/tree/master/Ex4>

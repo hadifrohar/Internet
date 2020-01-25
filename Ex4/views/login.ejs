@@ -1,0 +1,55 @@
+<%- include('shared/head.ejs') %>
+
+<script src="./javascripts/validation.js"></script>
+<script src="/javascripts/login.js"></script>
+
+</head>
+<body>
+
+  <div class="container">
+
+    <div class="row text-center mt-5">
+      <div class="col-12">
+        <h1>GITHUB SEARCH</h1>
+        <div class="alert alert-danger mx-auto w-50 font-weight-bold d-none" role="alert" id="alert_box"> </div>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-6">
+        <div class="card card-login text-center">
+          <div class="card-header">
+            Login
+          </div>
+
+          <div class="card-body">
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input type="text" class="form-control" name="username" id="username"  placeholder="Enter username">
+            </div>
+
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+            </div>
+
+            <div class="form-check">
+              <input type="checkbox" class="form-check-input" name="remember" id="remember">
+              <label class="form-check-label" for="remember">Remember me</label>
+            </div>
+
+            <button class="btn btn-primary" id="login-btn">Login</button>
+            <button class="btn btn-success" id="register-btn">Register</button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+  <%- include('shared/footer.ejs') %>
